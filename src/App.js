@@ -5,18 +5,22 @@ const KEY = "b56d92e3";
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [query, setQuery] = useState("The Science");
+  const [isLoading, setIsLoading] = useState();
+  const [query, setQuery] = useState("");
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchMovies() {
       setIsLoading(true);
       setError("");
       try {
         const resp = await fetch(
-          `http://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=${query}`
+          `http://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=${query}`,
+          {
+            signal: controller.signal,
+          }
         );
 
         if (!resp.ok)
@@ -25,9 +29,13 @@ export default function App() {
 
         if (data.Response === "False") throw new Error("Movie not found");
         setMovies(data.Search);
+        setError("");
       } catch (e) {
-        setError(`⛔Uppss! ${e.message}🔥`);
-        console.error(`⛔Uppss! ${e.message}🔥`);
+        //console.log(e.name);
+        if (e.name !== "AbortError") {
+          setError(`⛔Uppss! ${e.message}🔥`);
+          console.error(`⛔Uppss! ${e.message}🔥`);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -37,7 +45,12 @@ export default function App() {
       setError("");
       return;
     }
+    handleCloseMovie();
     fetchMovies();
+
+    return function () {
+      controller.abort();
+    };
   }, [query]);
 
   function handleSelectMovie(id) {
@@ -175,6 +188,20 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     Genre: genre,
   } = movie;
 
+  useEffect(() => {
+    function callback(e) {
+      // console.log(e.code, e.key); //key =code
+      if (e.code === "Escape") {
+        onCloseMovie();
+      }
+    }
+    document.addEventListener("keydown", callback);
+
+    return function () {
+      document.removeEventListener("keydown", callback);
+    };
+  }, [onCloseMovie]);
+
   useEffect(
     function () {
       async function getMovieDetails() {
@@ -189,6 +216,19 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       getMovieDetails();
     },
     [selectedId]
+  );
+
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `Movie | ${title}`;
+
+      //Cleaning up function
+      return function () {
+        document.title = "usePopcorn";
+      };
+    },
+    [title]
   );
 
   function handleAdd() {
