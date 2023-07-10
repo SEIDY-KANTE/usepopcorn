@@ -52,7 +52,7 @@ export default function StarRating({
     <div style={containerStyle} className={className}>
       <div style={starContainerStyle}>
         {Array.from({ length: maxRating }, (_, i) => (
-          //   <span key={i}>S{i + 1}</span>
+         
           <Star
             key={i}
             onRate={() => handleRating(i + 1)}
@@ -64,7 +64,6 @@ export default function StarRating({
           />
         ))}
       </div>
-      {/* <p style={textStyle}>{tempRating || rating || ""}</p> */}
       <p style={textStyle}>
         {message.length === maxRating
           ? message[tempRating ? tempRating - 1 : rating - 1]
