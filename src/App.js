@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const tempMovieData = [
   {
@@ -50,9 +50,39 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
+const KEY = "b56d92e3";
+
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const query = "interstellar";
+
+  useEffect(() => {
+    async function fetchMovies() {
+      setIsLoading(true);
+      try {
+        const resp = await fetch(
+          `http://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=${query}`
+        );
+
+        if (!resp.ok)
+          throw new Error("Something went wrong with fetching movies!");
+        const data = await resp.json();
+        // console.log(data);
+        // console.log(data.Response);
+        if (data.Response === "False") throw new Error("Movie not Found");
+        console.log(data.Search);
+      } catch (e) {
+        setError(`⛔Uppss! ${e.message}🔥`);
+        console.error(`⛔Uppss! ${e.message}🔥`);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchMovies();
+  }, []);
 
   return (
     <>
@@ -62,7 +92,13 @@ export default function App() {
       </NavBar>
       <Main>
         <Box>
-          <MovieList movies={movies} />
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <ErrorMessage message={error} />
+          ) : (
+            <MovieList movies={movies} />
+          )}
         </Box>
         <Box>
           <WatchedSummary watched={watched} />
@@ -73,6 +109,13 @@ export default function App() {
   );
 }
 
+function Loader() {
+  return <p className="loader">Loading...</p>;
+}
+function ErrorMessage({ message }) {
+  console.log("Eroro message");
+  return <p className="error">{message}</p>;
+}
 function NavBar({ children }) {
   return (
     <nav className="nav-bar">
