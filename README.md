@@ -1,4 +1,4 @@
-#usePopcorn
+# usePopcorn (Movies Project)
 
 ![11](https://github.com/SEIDY-KANTE/usepopcorn/assets/82980518/e7ea31c2-7591-4ea9-b5e9-627f4c37da90)
 
