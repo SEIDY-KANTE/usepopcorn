@@ -1,8 +1,8 @@
 # usePopcorn (Movies Project)
 
-![11](https://github.com/SEIDY-KANTE/usepopcorn/assets/82980518/e7ea31c2-7591-4ea9-b5e9-627f4c37da90)
+![Page1](https://github.com/SEIDY-KANTE/usepopcorn/assets/82980518/929989af-1b2a-44eb-a29b-70eb9605aa1b)
 
-![22](https://github.com/SEIDY-KANTE/usepopcorn/assets/82980518/e39fe9b3-57df-4e09-bcce-c3462a9a16a8)
+![Page2](https://github.com/SEIDY-KANTE/usepopcorn/assets/82980518/bb834ffc-dfe9-49fd-a0f6-0fe88b462a5b)
 
 
 # Getting Started with Create React App
